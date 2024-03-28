@@ -16,7 +16,7 @@ export function diffArrayWithSchema(
 		(item) => item['item_quality'] === 6 && item['craft_class'] === 'weapon',
 	);
 
-	const missingWeapons = weps.filter((weapon) => map.has(weapon.name));
+	const missingWeapons = weps.filter((weapon) => !map.has(weapon.name));
 
 	return missingWeapons;
 }
@@ -51,10 +51,6 @@ export function generateItemArray(response: Steam.InventoryResponse) {
 		const detailedItem = descriptions.get(id);
 
 		if (!detailedItem) {
-			return;
-		}
-		if (detailedItem.tradable === 0) {
-			console.log(`untradable item`, detailedItem.market_name);
 			return;
 		}
 
