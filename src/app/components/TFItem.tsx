@@ -7,11 +7,17 @@ type Props = {
 	readonly data: ITFItem;
 };
 
-const ItemQualityToColorMap = new Map([
+const ItemQualityToBorderMap = new Map([
 	[ITEM_QUALITY.STRANGE, '#CF6A32'],
 	[ITEM_QUALITY.NORMAL, '#B2B2B2'],
 	[ITEM_QUALITY.UNUSUAL, '#FFD700'],
 	[ITEM_QUALITY.UNIQUE, '#FFD700'],
+]);
+const ItemQualityToBackgroundMap = new Map([
+	[ITEM_QUALITY.STRANGE, '#CF6A32'],
+	[ITEM_QUALITY.NORMAL, '#B2B2B2'],
+	[ITEM_QUALITY.UNUSUAL, '#34243F'],
+	[ITEM_QUALITY.UNIQUE, '#584C1A'],
 ]);
 const TFItem = ({ data }: Props) => {
 	console.log({ data });
@@ -20,14 +26,18 @@ const TFItem = ({ data }: Props) => {
 		return null;
 	}
 	return (
-		<div
-			className="flex h-16 w-16 flex-wrap"
-			style={{ backgroundColor: ItemQualityToColorMap.get(data.item_quality) }}
+		<a
+			href={`https://backpack.tf/stats/Unique/${encodeURIComponent(data.name.replace('The', '').trim())}/Tradable/Craftable`}
+			target="_blank"
+			rel="noopener noreferrer"
+			className="flex h-24 w-24 flex-wrap rounded-lg"
+			style={{
+				border: `2px solid ${ItemQualityToBorderMap.get(data.item_quality)}`,
+				backgroundColor: ItemQualityToBackgroundMap.get(data.item_quality),
+			}}
 		>
-			{/* {data?.name || 'N/A'} */}
-
 			<Image src={data.image_url} width={100} height={100} alt={data.name} />
-		</div>
+		</a>
 	);
 };
 

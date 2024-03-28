@@ -23,17 +23,23 @@ const Auth = () => {
 	};
 
 	return (
-		<div>
-			<label htmlFor="steamid">Stea1mID</label>
-			<input
-				value={steamId}
-				onChange={(t) => setSteamId(t.target.value)}
-				className="rounded-sm text-slate-900"
-				name="steamid"
-				placeholder="your Steam ID or username"
-			/>
-			<button onClick={check}>Send</button>
-			<div className="flex flex-wrap">
+		<div className="flex flex-col gap-10">
+			<div className="flex gap-2">
+				<label className="text-slate-200" htmlFor="steamid">
+					SteamID
+				</label>
+				<input
+					value={steamId}
+					onChange={(t) => setSteamId(t.target.value)}
+					className="rounded-sm text-slate-900"
+					name="steamid"
+					placeholder="your Steam ID or username"
+				/>
+				<button className="font-bold text-slate-200" onClick={check}>
+					Send
+				</button>
+			</div>
+			<div className="flex flex-wrap gap-3">
 				{items.length > 0 ? items.map((item) => <TFItem data={item} />) : null}
 			</div>
 		</div>
