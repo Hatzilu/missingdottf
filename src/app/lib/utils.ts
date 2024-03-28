@@ -9,7 +9,7 @@ export const ITEM_QUALITY = {
 
 export function diffArrayWithSchema(
 	arr: Array<Steam.RgInventory & { details: Steam.RgDescription }>,
-	map: Map<string, boolean>,
+	duplicateMap: Map<string, number>,
 ) {
 	// for now just get all craftable unique weapons
 	const weps = schema.result.items.filter(
@@ -17,10 +17,23 @@ export function diffArrayWithSchema(
 	);
 
 	const missingWeapons = weps.filter(
-		(weapon) => !map.has(weapon.name) && !weapon.name.includes('TF_WEAPON_'),
+		(weapon) => !duplicateMap.has(weapon.name) && !weapon.name.includes('TF_WEAPON_'),
 	);
 
-	return missingWeapons;
+	// console.log(arr);
+
+	const duplicateWeapons = arr.filter((w) => {
+		if (!duplicateMap.has(w.details.market_name)) {
+			return;
+		}
+		const numberOfDuplicates = duplicateMap.get(w.details.market_name);
+		if (!numberOfDuplicates) {
+			return;
+		}
+		return numberOfDuplicates > 1;
+	});
+
+	return { missingWeapons, duplicateWeapons };
 }
 export function generateDescriptionMap(r: Steam.InventoryResponse['descriptions']) {
 	const arr = Object.values(r);
@@ -39,7 +52,7 @@ export function generateItemArray(response: Steam.InventoryResponse) {
 	const inventoryItems = Object.values(response.assets);
 	const descriptions = generateDescriptionMap(response.descriptions);
 
-	const map = new Map<string, boolean>();
+	const duplicateMap = new Map<string, number>();
 
 	const newItems: any[] = [];
 	inventoryItems.forEach((item) => {
@@ -61,7 +74,15 @@ export function generateItemArray(response: Steam.InventoryResponse) {
 			details: detailedItem,
 		};
 		newItems.push(d);
-		map.set(detailedItem.market_name, true);
+		if (duplicateMap.has(detailedItem.market_name)) {
+			let duplicateNumber = duplicateMap.get(detailedItem.market_name);
+			if (typeof duplicateNumber !== 'number') {
+				throw new Error('map has non-number value');
+			}
+			duplicateMap.set(detailedItem.market_name, duplicateNumber++);
+			return;
+		}
+		duplicateMap.set(detailedItem.market_name, 1);
 	});
-	return { items: newItems, map: map };
+	return { items: newItems, duplicateMap };
 }

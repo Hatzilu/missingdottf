@@ -22,11 +22,11 @@ export async function POST(req: NextRequest) {
 		const json = await res.json();
 		console.log({ json });
 
-		const { items, map } = generateItemArray(json);
+		const { items, duplicateMap } = generateItemArray(json);
 
-		const missingWeapons = diffArrayWithSchema(items, map);
+		const { missingWeapons, duplicateWeapons } = diffArrayWithSchema(items, duplicateMap);
 		// filter out items according to the schema
-		return NextResponse.json(missingWeapons);
+		return NextResponse.json({ missingWeapons, duplicateWeapons });
 	} catch (ex) {
 		console.error(ex);
 

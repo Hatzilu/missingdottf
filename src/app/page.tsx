@@ -1,11 +1,8 @@
 'use client';
-import { SessionProvider } from 'next-auth/react';
 import Image from 'next/image';
-import Auth from './components/Auth';
+import Form from './components/Form';
 
-export default function Home({ Component, pageProps }: any) {
-	console.log({ pageProps });
-
+export default function Home() {
 	return (
 		<main className="flex min-h-screen flex-col items-center gap-5 p-24">
 			<div className="inline-block w-full">
@@ -37,7 +34,7 @@ export default function Home({ Component, pageProps }: any) {
 				</div>
 			</div>
 
-			<Auth />
+			<Form />
 		</main>
 	);
 }

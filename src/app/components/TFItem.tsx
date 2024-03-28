@@ -20,8 +20,6 @@ const ItemQualityToBackgroundMap = new Map([
 	[ITEM_QUALITY.UNIQUE, '#584C1A'],
 ]);
 const TFItem = ({ data }: Props) => {
-	console.log({ data });
-
 	if (!data) {
 		return null;
 	}
