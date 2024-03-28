@@ -19,19 +19,9 @@ export function diffArrayWithSchema(
 	const missingWeapons = weps.filter(
 		(weapon) => !duplicateMap.has(weapon.name) && !weapon.name.includes('TF_WEAPON_'),
 	);
-
-	// console.log(arr);
-
-	const duplicateWeapons = arr.filter((w) => {
-		if (!duplicateMap.has(w.details.market_name)) {
-			return;
-		}
-		const numberOfDuplicates = duplicateMap.get(w.details.market_name);
-		if (!numberOfDuplicates) {
-			return;
-		}
-		return numberOfDuplicates > 1;
-	});
+	const duplicateWeapons = weps.filter(
+		(weapon) => duplicateMap.has(weapon.name) && duplicateMap.get(weapon.name)! > 1,
+	);
 
 	return { missingWeapons, duplicateWeapons };
 }
@@ -79,7 +69,7 @@ export function generateItemArray(response: Steam.InventoryResponse) {
 			if (typeof duplicateNumber !== 'number') {
 				throw new Error('map has non-number value');
 			}
-			duplicateMap.set(detailedItem.market_name, duplicateNumber++);
+			duplicateMap.set(detailedItem.market_name, duplicateNumber + 1);
 			return;
 		}
 		duplicateMap.set(detailedItem.market_name, 1);

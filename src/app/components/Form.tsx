@@ -5,9 +5,8 @@ import { ITFItem } from '../types/TFItem.types';
 
 const Form = () => {
 	const [steamId, setSteamId] = useState('');
-	const [items, setItems] = useState<ITFItem[]>([]);
-
-	console.log(steamId);
+	const [missingItems, setMissingItems] = useState<ITFItem[]>([]);
+	const [duplicateItems, setDuplicateItems] = useState<ITFItem[]>([]);
 
 	const check = async () => {
 		const res = await fetch(`/api/steam/playerItems`, {
@@ -19,7 +18,8 @@ const Form = () => {
 
 		console.log({ json });
 
-		setItems(json.missingWeapons);
+		setMissingItems(json.missingWeapons);
+		setDuplicateItems(json.duplicateWeapons);
 	};
 
 	return (
@@ -39,11 +39,21 @@ const Form = () => {
 					Send
 				</button>
 			</div>
-			{items.length === 0 ? null : (
+			{missingItems.length === 0 ? null : (
 				<div>
-					<h1>These are the weapons you're missing</h1>
+					<h1 className="text-lg text-slate-200">These are the weapons you're missing</h1>
 					<div className="flex flex-wrap gap-3">
-						{items.map((item) => (
+						{missingItems.map((item) => (
+							<TFItem data={item} />
+						))}
+					</div>
+				</div>
+			)}
+			{duplicateItems.length === 0 ? null : (
+				<div>
+					<h1 className="text-lg text-slate-200">These are the duplicates</h1>
+					<div className="flex flex-wrap gap-3">
+						{duplicateItems.map((item) => (
 							<TFItem data={item} />
 						))}
 					</div>
