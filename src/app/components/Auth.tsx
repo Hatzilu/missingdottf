@@ -1,23 +1,43 @@
-'use client'
-import React, { useState } from 'react'
+'use client';
+import React, { useState } from 'react';
+import TFItem from './TFItem';
+import { ITFItem } from '../types/TFItem.types';
 
 const Auth = () => {
-    const [steamId, setSteamId] = useState('')
-    const [items, setItems] = useState<string[]>([])
+	const [steamId, setSteamId] = useState('');
+	const [items, setItems] = useState<ITFItem[]>([]);
 
-    const check = async () => {
-        setItems(['todo']);
-    }
+	console.log(steamId);
 
-  return (
-    <div>
-        <label htmlFor='steamid' >SteamID</label>
-        <input value={steamId} onChange={(t) => setSteamId(t.target.value)} className='rounded-sm text-slate-900' name='steamid' placeholder='your Steam ID or username'/>
-        <button onClick={check}>Send</button>
+	const check = async () => {
+		const res = await fetch(`http://localhost:3000/api/steam/playerItems`, {
+			method: 'POST',
+			body: JSON.stringify({ steamId }),
+		});
 
-        {items.length > 0 ? <p>I still don't have access to the steam web API, but once i do i'll add more functionality, TODO.</p> : null}
-    </div>
-  )
-}
+		const json = await res.json();
 
-export default Auth
+		console.log({ json });
+
+		setItems(json);
+	};
+
+	return (
+		<div>
+			<label htmlFor="steamid">Stea1mID</label>
+			<input
+				value={steamId}
+				onChange={(t) => setSteamId(t.target.value)}
+				className="rounded-sm text-slate-900"
+				name="steamid"
+				placeholder="your Steam ID or username"
+			/>
+			<button onClick={check}>Send</button>
+			<div className="flex flex-wrap">
+				{items.length > 0 ? items.map((item) => <TFItem data={item} />) : null}
+			</div>
+		</div>
+	);
+};
+
+export default Auth;
