@@ -19,9 +19,21 @@ export function diffArrayWithSchema(
 	const missingWeapons = weps.filter(
 		(weapon) => !duplicateMap.has(weapon.name) && !weapon.name.includes('TF_WEAPON_'),
 	);
-	const duplicateWeapons = weps.filter(
-		(weapon) => duplicateMap.has(weapon.name) && duplicateMap.get(weapon.name)! > 1,
-	);
+	const duplicateWeapons: typeof weps & { duplicateCount: number }[] = [];
+
+	weps.forEach((weapon) => {
+		if (!duplicateMap.has(weapon.name)) {
+			return;
+		}
+		const duplicateCount = duplicateMap.get(weapon.name);
+		if (!duplicateCount) {
+			throw new Error(`Failed to get duplicate count for ${weapon.name}`);
+		}
+		const isDupe = duplicateMap.has(weapon.name) && duplicateCount > 1;
+		if (isDupe) {
+			duplicateWeapons.push({ ...weapon, duplicateCount });
+		}
+	});
 
 	return { missingWeapons, duplicateWeapons };
 }

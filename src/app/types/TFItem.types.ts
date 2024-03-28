@@ -26,6 +26,7 @@ export type ITFItem = {
 		can_consume: boolean;
 	};
 	attributes: Attribute[];
+	duplicateCount?: number;
 };
 
 type Attribute = {

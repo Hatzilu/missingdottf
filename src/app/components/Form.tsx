@@ -5,6 +5,7 @@ import { ITFItem } from '../types/TFItem.types';
 
 const Form = () => {
 	const [steamId, setSteamId] = useState('');
+	const [error, setError] = useState('');
 	const [missingItems, setMissingItems] = useState<ITFItem[]>([]);
 	const [duplicateItems, setDuplicateItems] = useState<ITFItem[]>([]);
 
@@ -15,6 +16,13 @@ const Form = () => {
 		});
 
 		const json = await res.json();
+
+		if (json.message) {
+			setError(json.message);
+			return;
+		} else {
+			setError('');
+		}
 
 		console.log({ json });
 

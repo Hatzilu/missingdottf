@@ -34,6 +34,11 @@ const TFItem = ({ data }: Props) => {
 				backgroundColor: ItemQualityToBackgroundMap.get(data.item_quality),
 			}}
 		>
+			{data.duplicateCount ? (
+				<div className="absolute m-1 h-5 w-5 rounded-lg bg-slate-950">
+					<p className="mx-1 text-sm text-red-700">{data.duplicateCount}</p>
+				</div>
+			) : null}
 			<Image src={data.image_url} width={100} height={100} alt={data.name} />
 		</a>
 	);
