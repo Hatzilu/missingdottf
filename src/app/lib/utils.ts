@@ -7,29 +7,26 @@ export const ITEM_QUALITY = {
 	STRANGE: 11,
 };
 
-export function diffArrayWithSchema(
-	arr: Array<Steam.RgInventory & { details: Steam.RgDescription }>,
-	duplicateMap: Map<string, number>,
-) {
+export function diffArrayWithSchema(weaponCountMap: Map<string, number>) {
 	// for now just get all craftable unique weapons
 	const weps = schema.result.items.filter(
 		(item) => item['item_quality'] === 6 && item['craft_class'] === 'weapon',
 	);
 
 	const missingWeapons = weps.filter(
-		(weapon) => !duplicateMap.has(weapon.name) && !weapon.name.includes('TF_WEAPON_'),
+		(weapon) => !weaponCountMap.has(weapon.name) && !weapon.name.includes('TF_WEAPON_'),
 	);
-	const duplicateWeapons: typeof weps & { duplicateCount: number }[] = [];
+	const duplicateWeapons: Array<(typeof weps)['0'] & { duplicateCount: number }> = [];
 
 	weps.forEach((weapon) => {
-		if (!duplicateMap.has(weapon.name)) {
+		if (!weaponCountMap.has(weapon.name)) {
 			return;
 		}
-		const duplicateCount = duplicateMap.get(weapon.name);
+		const duplicateCount = weaponCountMap.get(weapon.name);
 		if (!duplicateCount) {
 			throw new Error(`Failed to get duplicate count for ${weapon.name}`);
 		}
-		const isDupe = duplicateMap.has(weapon.name) && duplicateCount > 1;
+		const isDupe = weaponCountMap.has(weapon.name) && duplicateCount > 1;
 		if (isDupe) {
 			duplicateWeapons.push({ ...weapon, duplicateCount });
 		}
